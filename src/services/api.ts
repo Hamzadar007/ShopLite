@@ -1,7 +1,7 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create, type AxiosRequestConfig } from 'axios';
 
 import { config } from '@/constants/config';
+import { appStorage } from '@/services/storage/storage';
 
 export const BASE_URL = config.apiUrl;
 export const AUTH_TOKEN_KEY = 'shoplite-auth-token';
@@ -16,7 +16,7 @@ export const apiClient = create({
 });
 
 apiClient.interceptors.request.use(async (request) => {
-  const token = await AsyncStorage.getItem(AUTH_TOKEN_KEY);
+  const token = await appStorage.getItem(AUTH_TOKEN_KEY);
 
   if (token) {
     request.headers.Authorization = `Bearer ${token}`;
@@ -29,7 +29,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      await AsyncStorage.removeItem(AUTH_TOKEN_KEY);
+      await appStorage.removeItem(AUTH_TOKEN_KEY);
     }
 
     return Promise.reject(error);
@@ -37,11 +37,11 @@ apiClient.interceptors.response.use(
 );
 
 export async function setAuthToken(token: string) {
-  await AsyncStorage.setItem(AUTH_TOKEN_KEY, token);
+  await appStorage.setItem(AUTH_TOKEN_KEY, token);
 }
 
 export async function clearAuthToken() {
-  await AsyncStorage.removeItem(AUTH_TOKEN_KEY);
+  await appStorage.removeItem(AUTH_TOKEN_KEY);
 }
 
 export async function apiRequest<T>(

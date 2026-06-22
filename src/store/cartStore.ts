@@ -1,7 +1,7 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+import { appStorage } from '@/services/storage/storage';
 import type { CartItem } from '@/types/cart';
 import type { Product } from '@/types/product';
 
@@ -90,7 +90,7 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: 'shoplite-cart',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => appStorage),
       partialize: (state) => ({ items: state.items }),
     },
   ),

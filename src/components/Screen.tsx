@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { colors } from '@/theme/colors';
+import { hp, wp } from '@/utils/Responsive';
 
 export function Screen({ children }: PropsWithChildren) {
   return (
@@ -21,6 +22,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
+    paddingHorizontal: wp(5.8),
+    paddingVertical: hp(2.68),
   },
 });

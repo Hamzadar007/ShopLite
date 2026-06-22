@@ -1,7 +1,7 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+import { appStorage } from '@/services/storage/storage';
 import type { Product } from '@/types/product';
 
 type FavouriteState = {
@@ -50,7 +50,7 @@ export const useFavouriteStore = create<FavouriteState>()(
     }),
     {
       name: 'shoplite-favourites',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => appStorage),
       partialize: (state) => ({ items: state.items }),
     },
   ),
