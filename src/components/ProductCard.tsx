@@ -14,15 +14,20 @@ import { formatPrice } from '@/utils/formatPrice';
 import { fontPixel, heightPixel, hp, wp } from '@/utils/Responsive';
 
 type ProductCardProps = {
+  onPress?: () => void;
   product: Product;
   style?: StyleProp<ViewStyle>;
 };
 
-export function ProductCard({ product, style }: ProductCardProps) {
+export function ProductCard({ onPress, product, style }: ProductCardProps) {
   const category = formatCategory(product.category);
 
   return (
-    <Pressable style={({ pressed }) => [styles.card, style, pressed && styles.cardPressed]}>
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      style={({ pressed }) => [styles.card, style, pressed && styles.cardPressed]}
+    >
       <View style={styles.imageWrap}>
         {product.image ? (
           <Image source={{ uri: product.image }} style={styles.image} />

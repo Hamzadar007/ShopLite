@@ -14,17 +14,34 @@ type ApiProduct = {
   description?: string;
   thumbnail?: string;
   images?: string[];
+  stock?: number;
+  availabilityStatus?: string;
+  discountPercentage?: number;
 };
 
-export async function getProducts(): Promise<Product[]> {
-  const response = await apiClient.get<ProductResponse>(ENDPOINTS.products);
-
-  return response.data.products.map((product) => ({
+function mapApiProduct(product: ApiProduct): Product {
+  return {
     id: product.id,
     title: product.title,
     price: product.price,
     category: product.category,
     description: product.description,
     image: product.thumbnail ?? product.images?.[0],
-  }));
+    images: product.images,
+    stock: product.stock,
+    availabilityStatus: product.availabilityStatus,
+    discountPercentage: product.discountPercentage,
+  };
+}
+
+export async function getProducts(): Promise<Product[]> {
+  const response = await apiClient.get<ProductResponse>(ENDPOINTS.products);
+
+  return response.data.products.map(mapApiProduct);
+}
+
+export async function getProduct(id: number): Promise<Product> {
+  const response = await apiClient.get<ApiProduct>(ENDPOINTS.product(id));
+
+  return mapApiProduct(response.data);
 }

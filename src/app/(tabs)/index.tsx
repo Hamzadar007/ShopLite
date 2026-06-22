@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import {
-  ActivityIndicator,
   FlatList,
   Pressable,
   StyleSheet,
@@ -13,12 +13,14 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ProductCard } from '@/components/ProductCard';
+import { ProductListSkeleton } from '@/components/ProductListSkeleton';
 import { Screen } from '@/components/Screen';
 import { useProduct } from '@/hooks/useProduct';
 import { colors } from '@/theme/colors';
 import { fontPixel, hp, wp } from '@/utils/Responsive';
 
 export default function ProductsScreen() {
+  const router = useRouter();
   const { products, loading, error, refetch } = useProduct();
   const { bottom } = useSafeAreaInsets();
   const { width } = useWindowDimensions();
@@ -44,10 +46,7 @@ export default function ProductsScreen() {
   if (loading && products.length === 0) {
     return (
       <Screen>
-        <View style={styles.centerState}>
-          <ActivityIndicator color={colors.primary} size="large" />
-          <Text style={styles.stateText}>Loading products...</Text>
-        </View>
+        <ProductListSkeleton />
       </Screen>
     );
   }
@@ -68,81 +67,88 @@ export default function ProductsScreen() {
 
   return (
     <Screen>
-      <View style={styles.fixedHeader}>
-        <View style={styles.headerRow}>
-          <Text style={styles.title}>Products</Text>
-          <Text style={styles.resultCount}>{resultCountText}</Text>
-        </View>
-        <View style={styles.searchBox}>
-          <Ionicons name="search-outline" color={colors.muted} size={20} />
-          <TextInput
-            autoCapitalize="none"
-            autoCorrect={false}
-            clearButtonMode="never"
-            onChangeText={setSearchQuery}
-            placeholder="Search products"
-            placeholderTextColor={colors.muted}
-            returnKeyType="search"
-            style={styles.searchInput}
-            value={searchQuery}
-          />
-          {searchQuery.length > 0 ? (
-            <Pressable
-              accessibilityLabel="Clear product search"
-              hitSlop={8}
-              onPress={() => setSearchQuery('')}
-              style={styles.clearSearchButton}
-            >
-              <Ionicons name="close-circle" color={colors.muted} size={20} />
-            </Pressable>
-          ) : null}
-        </View>
-        {error ? <Text style={styles.warningText}>{error}</Text> : null}
-      </View>
-      <FlatList
-        key={`products-${numberOfColumns}`}
-        data={filteredProducts}
-        numColumns={numberOfColumns}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <ProductCard product={item} style={styles.productCard} />}
-        columnWrapperStyle={isGridLayout ? styles.columnWrapper : undefined}
-        contentContainerStyle={[
-          filteredProducts.length === 0 ? styles.emptyList : styles.listContent,
-          filteredProducts.length > 0 && { paddingBottom: listBottomInset },
-        ]}
-        ListEmptyComponent={
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyTitle}>
-              {hasSearchQuery ? 'No matches found' : 'No products found'}
-            </Text>
-            <Text style={styles.emptyText}>
-              {hasSearchQuery
-                ? 'Try searching with another product name.'
-                : 'Pull down to refresh the product list.'}
-            </Text>
+      <View style={styles.container}>
+        <View style={styles.fixedHeader}>
+          <View style={styles.headerRow}>
+            <Text style={styles.title}>Products</Text>
+            <Text style={styles.resultCount}>{resultCountText}</Text>
           </View>
-        }
-        onRefresh={() => void refetch()}
-        refreshing={loading}
-        showsVerticalScrollIndicator={false}
-        scrollIndicatorInsets={{ bottom: listBottomInset }}
-        style={styles.list}
-      />
+          <View style={styles.searchBox}>
+            <Ionicons name="search-outline" color={colors.muted} size={20} />
+            <TextInput
+              autoCapitalize="none"
+              autoCorrect={false}
+              clearButtonMode="never"
+              onChangeText={setSearchQuery}
+              placeholder="Search products"
+              placeholderTextColor={colors.muted}
+              returnKeyType="search"
+              style={styles.searchInput}
+              value={searchQuery}
+            />
+            {searchQuery.length > 0 ? (
+              <Pressable
+                accessibilityLabel="Clear product search"
+                hitSlop={8}
+                onPress={() => setSearchQuery('')}
+                style={styles.clearSearchButton}
+              >
+                <Ionicons name="close-circle" color={colors.muted} size={20} />
+              </Pressable>
+            ) : null}
+          </View>
+          {error ? <Text style={styles.warningText}>{error}</Text> : null}
+        </View>
+        <FlatList
+          key={`products-${numberOfColumns}`}
+          data={filteredProducts}
+          numColumns={numberOfColumns}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <ProductCard
+              onPress={() => router.push(`/product/${item.id}`)}
+              product={item}
+              style={styles.productCard}
+            />
+          )}
+          columnWrapperStyle={isGridLayout ? styles.columnWrapper : undefined}
+          contentContainerStyle={[
+            filteredProducts.length === 0 ? styles.emptyList : styles.listContent,
+            filteredProducts.length > 0 && { paddingBottom: listBottomInset },
+          ]}
+          ListEmptyComponent={
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyTitle}>
+                {hasSearchQuery ? 'No matches found' : 'No products found'}
+              </Text>
+              <Text style={styles.emptyText}>
+                {hasSearchQuery
+                  ? 'Try searching with another product name.'
+                  : 'Pull down to refresh the product list.'}
+              </Text>
+            </View>
+          }
+          onRefresh={() => void refetch()}
+          refreshing={loading}
+          showsVerticalScrollIndicator={false}
+          scrollIndicatorInsets={{ bottom: listBottomInset }}
+          style={styles.list}
+        />
+      </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: wp(5.8),
+  },
   centerState: {
     alignItems: 'center',
     gap: hp(1.34),
     paddingHorizontal: wp(5.8),
     paddingVertical: hp(2.68),
-  },
-  stateText: {
-    color: colors.muted,
-    fontSize: fontPixel(16),
-    textAlign: 'center',
   },
   errorTitle: {
     color: colors.error,
