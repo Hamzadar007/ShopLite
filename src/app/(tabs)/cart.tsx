@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { router } from 'expo-router';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CartItemRow } from '@/components/CartItemRow';
@@ -40,7 +41,7 @@ export default function CartScreen() {
         </View>
 
         <FlatList
-          contentContainerStyle={[styles.listContent, { paddingBottom: bottom + hp(2.68) }]}
+          contentContainerStyle={[styles.listContent, { paddingBottom: bottom + hp(10) }]}
           data={items}
           keyExtractor={(item) => item.product.id.toString()}
           renderItem={({ item }) => <CartItemRow item={item} />}
@@ -60,6 +61,12 @@ export default function CartScreen() {
             </View>
           }
         />
+
+        <View style={[styles.footer, { paddingBottom: bottom + hp(1.34) }]}>
+          <Pressable onPress={() => router.push('/checkout')} style={styles.checkoutButton}>
+            <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
+          </Pressable>
+        </View>
       </View>
     </Screen>
   );
@@ -151,5 +158,25 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(14),
     lineHeight: fontPixel(20),
     textAlign: 'center',
+  },
+  footer: {
+    backgroundColor: colors.background,
+    borderTopColor: '#E8E8EE',
+    borderTopWidth: 1,
+    paddingTop: hp(1.34),
+  },
+  checkoutButton: {
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: heightPixel(8),
+    justifyContent: 'center',
+    minHeight: hp(5.58),
+    paddingHorizontal: wp(4.35),
+    paddingVertical: hp(1.34),
+  },
+  checkoutButtonText: {
+    color: colors.surface,
+    fontSize: fontPixel(16),
+    fontWeight: '700',
   },
 });

@@ -1,19 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams } from 'expo-router';
-import {
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import { AddToCartControls } from '@/components/AddToCartControls';
 import { FavouriteToggle } from '@/components/FavouriteToggle';
 import { ProductDetailSkeleton } from '@/components/ProductDetailSkeleton';
 import { Screen } from '@/components/Screen';
+import { ZoomableImage } from '@/components/ZoomableImage';
 import { useProductDetail } from '@/hooks/useProductDetail';
 import { colors } from '@/theme/colors';
 import type { Product } from '@/types/product';
@@ -66,7 +59,7 @@ export default function ProductDetailScreen() {
         <View style={[styles.productLayout, isWideLayout && styles.productLayoutWide]}>
           <View style={[styles.imagePanel, isWideLayout && styles.imagePanelWide]}>
             {detailImage ? (
-              <Image source={{ uri: detailImage }} style={styles.image} />
+              <ZoomableImage imageStyle={styles.image} uri={detailImage} />
             ) : (
               <View style={styles.imagePlaceholder}>
                 <Ionicons color={colors.muted} name="image-outline" size={heightPixel(34)} />
