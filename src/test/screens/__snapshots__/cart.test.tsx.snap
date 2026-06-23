@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CartScreen matches snapshot when cart is empty 1`] = `
+<View
+  style={
+    {
+      "backgroundColor": "#F2F2F7",
+      "flex": 1,
+    }
+  }
+>
+  <View
+    style={
+      {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      style={
+        {
+          "alignItems": "center",
+          "flex": 1,
+          "gap": 15,
+          "justifyContent": "center",
+          "paddingHorizontal": 60,
+        }
+      }
+    >
+      <Text>
+        icon
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#1C1C1E",
+            "fontSize": 30,
+            "fontWeight": "800",
+            "textAlign": "center",
+          }
+        }
+      >
+        Your cart is empty
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#6C6C70",
+            "fontSize": 21,
+            "lineHeight": 30,
+            "textAlign": "center",
+          }
+        }
+      >
+        Add products from the catalog to see them here.
+      </Text>
+    </View>
+  </View>
+</View>
+`;
