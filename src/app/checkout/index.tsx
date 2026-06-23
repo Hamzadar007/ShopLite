@@ -3,12 +3,13 @@ import { useEffect, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+
+import { FocusablePressable } from '@/components/FocusablePressable';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FormField } from '@/components/FormField';
@@ -160,14 +161,14 @@ export default function CheckoutAddressScreen() {
         </ScrollView>
 
         <View style={[styles.footer, { paddingBottom: bottom + hp(1.34) }]}>
-          <Pressable
+          <FocusablePressable
             accessibilityLabel="Continue to summary"
             accessibilityRole="button"
             onPress={handleContinue}
             style={styles.primaryButton}
           >
             <Text style={styles.primaryButtonText}>Continue to Summary</Text>
-          </Pressable>
+          </FocusablePressable>
         </View>
       </KeyboardAvoidingView>
     </Screen>

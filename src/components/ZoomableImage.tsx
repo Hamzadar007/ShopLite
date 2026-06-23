@@ -3,13 +3,14 @@ import {
   Animated,
   Image,
   PanResponder,
-  Pressable,
   StyleSheet,
   View,
   type ImageStyle,
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
+
+import { FocusablePressable } from '@/components/FocusablePressable';
 
 const MIN_SCALE = 1;
 const MAX_SCALE = 4;
@@ -226,7 +227,7 @@ export function ZoomableImage({
       style={[styles.container, containerStyle]}
       {...panResponder.panHandlers}
     >
-      <Pressable
+      <FocusablePressable
         accessibilityHint="Double tap to zoom in or out"
         accessibilityLabel={accessibilityLabel}
         accessibilityRole="imagebutton"
@@ -243,7 +244,7 @@ export function ZoomableImage({
         >
           <Image resizeMode="contain" source={{ uri }} style={[styles.image, imageStyle]} />
         </Animated.View>
-      </Pressable>
+      </FocusablePressable>
     </View>
   );
 }

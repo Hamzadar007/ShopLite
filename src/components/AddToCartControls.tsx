@@ -1,5 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+
+import { FocusablePressable } from '@/components/FocusablePressable';
 
 import { QuantityStepper } from '@/components/QuantityStepper';
 import { useCartStore } from '@/store/cartStore';
@@ -51,7 +53,7 @@ export function AddToCartControls({ inStock, product }: AddToCartControlsProps) 
 
   if (quantity === 0) {
     return (
-      <Pressable
+      <FocusablePressable
         accessibilityLabel={inStock ? `Add ${product.title} to cart` : 'Out of stock'}
         accessibilityRole="button"
         accessibilityState={{ disabled: !inStock }}
@@ -61,7 +63,7 @@ export function AddToCartControls({ inStock, product }: AddToCartControlsProps) 
       >
         <Ionicons color={colors.surface} name="cart-outline" size={heightPixel(20)} />
         <Text style={styles.addButtonText}>{inStock ? 'Add to Cart' : 'Out of Stock'}</Text>
-      </Pressable>
+      </FocusablePressable>
     );
   }
 
@@ -77,7 +79,7 @@ export function AddToCartControls({ inStock, product }: AddToCartControlsProps) 
         />
       </View>
 
-      <Pressable
+      <FocusablePressable
         accessibilityLabel={`Remove ${product.title} from cart`}
         accessibilityRole="button"
         hitSlop={8}
@@ -86,7 +88,7 @@ export function AddToCartControls({ inStock, product }: AddToCartControlsProps) 
       >
         <Ionicons color={colors.error} name="trash-outline" size={heightPixel(18)} />
         <Text style={styles.removeButtonText}>Remove from cart</Text>
-      </Pressable>
+      </FocusablePressable>
     </View>
   );
 }

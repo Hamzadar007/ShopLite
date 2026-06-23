@@ -1,6 +1,8 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+
+import { FocusablePressable } from '@/components/FocusablePressable';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { OrderSummaryCard } from '@/components/OrderSummaryCard';
@@ -86,7 +88,7 @@ export default function CheckoutSummaryScreen() {
       </ScrollView>
 
       <View style={[styles.footer, { paddingBottom: bottom + hp(1.34) }]}>
-        <Pressable
+        <FocusablePressable
           accessibilityLabel={isProcessing ? 'Placing order' : 'Place order'}
           accessibilityRole="button"
           accessibilityState={{ disabled: isProcessing }}
@@ -99,7 +101,7 @@ export default function CheckoutSummaryScreen() {
           ) : (
             <Text style={styles.primaryButtonText}>Place Order</Text>
           )}
-        </Pressable>
+        </FocusablePressable>
       </View>
     </Screen>
   );

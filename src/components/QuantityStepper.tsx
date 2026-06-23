@@ -1,5 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+
+import { FocusablePressable } from '@/components/FocusablePressable';
 
 import { colors } from '@/theme/colors';
 import { fontPixel, heightPixel, hp } from '@/utils/Responsive';
@@ -19,7 +21,7 @@ export function QuantityStepper({
 }: QuantityStepperProps) {
   return (
     <View accessibilityLabel={`Quantity ${quantity}`} style={styles.stepper}>
-      <Pressable
+      <FocusablePressable
         accessibilityLabel="Decrease quantity"
         accessibilityRole="button"
         hitSlop={8}
@@ -27,9 +29,9 @@ export function QuantityStepper({
         style={styles.stepperButton}
       >
         <Ionicons color={colors.text} name="remove" size={heightPixel(18)} />
-      </Pressable>
+      </FocusablePressable>
       <Text style={styles.quantityValue}>{quantity}</Text>
-      <Pressable
+      <FocusablePressable
         accessibilityLabel="Increase quantity"
         accessibilityRole="button"
         accessibilityState={{ disabled: !canIncrement }}
@@ -43,7 +45,7 @@ export function QuantityStepper({
           name="add"
           size={heightPixel(18)}
         />
-      </Pressable>
+      </FocusablePressable>
     </View>
   );
 }

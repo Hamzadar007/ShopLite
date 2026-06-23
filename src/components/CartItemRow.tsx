@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { memo, useCallback } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+
+import { FocusablePressable } from '@/components/FocusablePressable';
 
 import { LazyImage } from '@/components/LazyImage';
 import { QuantityStepper } from '@/components/QuantityStepper';
@@ -72,7 +74,7 @@ function CartItemRowComponent({ item }: CartItemRowProps) {
           <Text numberOfLines={2} style={styles.title}>
             {item.product.title}
           </Text>
-          <Pressable
+          <FocusablePressable
             accessibilityLabel={`Remove ${item.product.title} from cart`}
             accessibilityRole="button"
             hitSlop={8}
@@ -80,7 +82,7 @@ function CartItemRowComponent({ item }: CartItemRowProps) {
             style={styles.removeButton}
           >
             <Ionicons color={colors.muted} name="close" size={heightPixel(20)} />
-          </Pressable>
+          </FocusablePressable>
         </View>
 
         <Text style={styles.unitPrice}>{formatPrice(item.product.price)} each</Text>

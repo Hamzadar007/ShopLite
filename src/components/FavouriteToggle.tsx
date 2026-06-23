@@ -1,5 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
+
+import { FocusablePressable } from '@/components/FocusablePressable';
 
 import { useFavouriteStore } from '@/store/favouriteStore';
 import { colors } from '@/theme/colors';
@@ -18,7 +20,7 @@ export function FavouriteToggle({ compact = false, product }: FavouriteTogglePro
   const toggleItem = useFavouriteStore((state) => state.toggleItem);
 
   return (
-    <Pressable
+    <FocusablePressable
       accessibilityLabel={
         isFavourite
           ? `Remove ${product.title} from favourites`
@@ -40,7 +42,7 @@ export function FavouriteToggle({ compact = false, product }: FavouriteTogglePro
           {isFavourite ? 'Saved to Favourites' : 'Add to Favourites'}
         </Text>
       ) : null}
-    </Pressable>
+    </FocusablePressable>
   );
 }
 

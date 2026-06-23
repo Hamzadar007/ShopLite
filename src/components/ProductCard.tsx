@@ -1,6 +1,5 @@
 import { memo } from 'react';
 import {
-  Pressable,
   StyleSheet,
   Text,
   View,
@@ -8,6 +7,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 
+import { FocusablePressable } from '@/components/FocusablePressable';
 import { LazyImage } from '@/components/LazyImage';
 import { PRODUCT_CARD_HEIGHT } from '@/constants/listLayout';
 import { colors } from '@/theme/colors';
@@ -25,7 +25,7 @@ function ProductCardComponent({ onPress, product, style }: ProductCardProps) {
   const category = formatCategory(product.category);
 
   return (
-    <Pressable
+    <FocusablePressable
       accessibilityHint="Opens product details"
       accessibilityLabel={`${product.title}, ${formatPrice(product.price)}`}
       accessibilityRole="button"
@@ -53,7 +53,7 @@ function ProductCardComponent({ onPress, product, style }: ProductCardProps) {
           <Text style={styles.price}>{formatPrice(product.price)}</Text>
         </View>
       </View>
-    </Pressable>
+    </FocusablePressable>
   );
 }
 

@@ -1,8 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import { AddToCartControls } from '@/components/AddToCartControls';
+import { FocusablePressable } from '@/components/FocusablePressable';
 import { FavouriteToggle } from '@/components/FavouriteToggle';
 import { ProductDetailSkeleton } from '@/components/ProductDetailSkeleton';
 import { Screen } from '@/components/Screen';
@@ -40,14 +41,14 @@ export default function ProductDetailScreen() {
           <Ionicons color={colors.muted} name="cube-outline" size={heightPixel(48)} />
           <Text style={styles.emptyTitle}>No data found</Text>
           {error ? <Text style={styles.errorText}>{error}</Text> : null}
-          <Pressable
+          <FocusablePressable
             accessibilityLabel="Try again"
             accessibilityRole="button"
             onPress={() => void refetch()}
             style={styles.retryButton}
           >
             <Text style={styles.retryButtonText}>Try again</Text>
-          </Pressable>
+          </FocusablePressable>
         </View>
       </Screen>
     );

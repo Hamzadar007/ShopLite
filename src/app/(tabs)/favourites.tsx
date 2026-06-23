@@ -3,7 +3,6 @@ import { useRouter } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import {
   FlatList,
-  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -13,6 +12,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { FocusablePressable } from '@/components/FocusablePressable';
 import { ProductCard } from '@/components/ProductCard';
 import { Screen } from '@/components/Screen';
 import {
@@ -99,7 +99,7 @@ export default function FavouritesScreen() {
               value={searchQuery}
             />
             {searchQuery.length > 0 ? (
-              <Pressable
+              <FocusablePressable
                 accessibilityLabel="Clear favourites search"
                 accessibilityRole="button"
                 hitSlop={8}
@@ -107,7 +107,7 @@ export default function FavouritesScreen() {
                 style={styles.clearSearchButton}
               >
                 <Ionicons color={colors.muted} name="close-circle" size={20} />
-              </Pressable>
+              </FocusablePressable>
             ) : null}
           </View>
         </View>

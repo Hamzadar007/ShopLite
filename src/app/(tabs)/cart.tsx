@@ -1,7 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useCallback, useMemo } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View, type ListRenderItem } from 'react-native';
+import { FlatList, StyleSheet, Text, View, type ListRenderItem } from 'react-native';
+
+import { FocusablePressable } from '@/components/FocusablePressable';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CartItemRow } from '@/components/CartItemRow';
@@ -85,14 +87,14 @@ export default function CartScreen() {
         />
 
         <View style={[styles.footer, { paddingBottom: bottom + hp(1.34) }]}>
-          <Pressable
+          <FocusablePressable
             accessibilityLabel="Proceed to checkout"
             accessibilityRole="button"
             onPress={() => router.push('/checkout')}
             style={styles.checkoutButton}
           >
             <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
-          </Pressable>
+          </FocusablePressable>
         </View>
       </View>
     </Screen>

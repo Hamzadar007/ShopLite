@@ -1,7 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+
+import { FocusablePressable } from '@/components/FocusablePressable';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { OrderSummaryCard } from '@/components/OrderSummaryCard';
@@ -72,14 +74,14 @@ export default function CheckoutConfirmationScreen() {
           subtotal={placedOrder.subtotal}
         />
 
-        <Pressable
+        <FocusablePressable
           accessibilityLabel="Continue shopping"
           accessibilityRole="button"
           onPress={handleContinueShopping}
           style={styles.primaryButton}
         >
           <Text style={styles.primaryButtonText}>Continue Shopping</Text>
-        </Pressable>
+        </FocusablePressable>
       </ScrollView>
     </Screen>
   );

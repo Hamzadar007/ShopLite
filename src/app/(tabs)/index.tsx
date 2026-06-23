@@ -3,7 +3,6 @@ import { useRouter } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import {
   FlatList,
-  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -13,6 +12,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { FocusablePressable } from '@/components/FocusablePressable';
 import { ProductCard } from '@/components/ProductCard';
 import { ProductListSkeleton } from '@/components/ProductListSkeleton';
 import { RecentlyViewedList } from '@/components/RecentlyViewedList';
@@ -96,14 +96,14 @@ export default function ProductsScreen() {
         <View style={styles.centerState}>
           <Text style={styles.errorTitle}>Unable to load products</Text>
           <Text style={styles.errorText}>{error}</Text>
-          <Pressable
+          <FocusablePressable
             accessibilityLabel="Try again"
             accessibilityRole="button"
             onPress={() => void refetch()}
             style={styles.retryButton}
           >
             <Text style={styles.retryButtonText}>Try again</Text>
-          </Pressable>
+          </FocusablePressable>
         </View>
       </Screen>
     );
@@ -133,7 +133,7 @@ export default function ProductsScreen() {
               value={searchQuery}
             />
             {searchQuery.length > 0 ? (
-              <Pressable
+              <FocusablePressable
                 accessibilityLabel="Clear product search"
                 accessibilityRole="button"
                 hitSlop={8}
@@ -141,7 +141,7 @@ export default function ProductsScreen() {
                 style={styles.clearSearchButton}
               >
                 <Ionicons name="close-circle" color={colors.muted} size={20} />
-              </Pressable>
+              </FocusablePressable>
             ) : null}
           </View>
           {error ? <Text style={styles.warningText}>{error}</Text> : null}
