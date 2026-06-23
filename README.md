@@ -2,6 +2,8 @@
 
 Expo React Native shopping app with product catalog, cart, favourites, checkout, and deep linking.
 
+See [TECHNICAL_DECISIONS.md](./TECHNICAL_DECISIONS.md) for architecture, state management, and persistence rationale.
+
 ## Getting started
 
 Install dependencies:
