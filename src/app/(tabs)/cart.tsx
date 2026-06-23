@@ -1,13 +1,21 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useCallback, useMemo } from 'react';
+import { FlatList, Pressable, StyleSheet, Text, View, type ListRenderItem } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CartItemRow } from '@/components/CartItemRow';
 import { Screen } from '@/components/Screen';
+import {
+  CART_ITEM_ROW_HEIGHT,
+  CART_LIST_GAP,
+  createVerticalListGetItemLayout,
+  VERTICAL_LIST_PERF_PROPS,
+} from '@/constants/listLayout';
 import { useCartTotal } from '@/hooks/useCartTotal';
 import { useCartStore } from '@/store/cartStore';
 import { colors } from '@/theme/colors';
+import type { CartItem } from '@/types/cart';
 import { formatPrice } from '@/utils/formatPrice';
 import { fontPixel, heightPixel, hp, wp } from '@/utils/Responsive';
 
@@ -17,6 +25,18 @@ export default function CartScreen() {
   const subtotal = useCartTotal(items);
   const grandTotal = subtotal;
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
+
+  const getItemLayout = useMemo(
+    () => createVerticalListGetItemLayout(CART_ITEM_ROW_HEIGHT, CART_LIST_GAP),
+    [],
+  );
+
+  const keyExtractor = useCallback((item: CartItem) => item.product.id.toString(), []);
+
+  const renderItem = useCallback<ListRenderItem<CartItem>>(
+    ({ item }) => <CartItemRow item={item} />,
+    [],
+  );
 
   if (items.length === 0) {
     return (
@@ -41,12 +61,11 @@ export default function CartScreen() {
         </View>
 
         <FlatList
+          {...VERTICAL_LIST_PERF_PROPS}
           contentContainerStyle={[styles.listContent, { paddingBottom: bottom + hp(10) }]}
           data={items}
-          keyExtractor={(item) => item.product.id.toString()}
-          renderItem={({ item }) => <CartItemRow item={item} />}
-          showsVerticalScrollIndicator={false}
-          style={styles.list}
+          getItemLayout={getItemLayout}
+          keyExtractor={keyExtractor}
           ListFooterComponent={
             <View style={styles.summaryCard}>
               <View style={styles.summaryRow}>
@@ -60,10 +79,18 @@ export default function CartScreen() {
               </View>
             </View>
           }
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          style={styles.list}
         />
 
         <View style={[styles.footer, { paddingBottom: bottom + hp(1.34) }]}>
-          <Pressable onPress={() => router.push('/checkout')} style={styles.checkoutButton}>
+          <Pressable
+            accessibilityLabel="Proceed to checkout"
+            accessibilityRole="button"
+            onPress={() => router.push('/checkout')}
+            style={styles.checkoutButton}
+          >
             <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
           </Pressable>
         </View>

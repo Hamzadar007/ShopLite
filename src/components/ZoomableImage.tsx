@@ -17,6 +17,7 @@ const DOUBLE_TAP_SCALE = 2;
 const DOUBLE_TAP_DELAY_MS = 280;
 
 type ZoomableImageProps = {
+  accessibilityLabel?: string;
   containerStyle?: StyleProp<ViewStyle>;
   imageStyle?: StyleProp<ImageStyle>;
   uri: string;
@@ -68,7 +69,12 @@ function createInitialGestureState(): GestureState {
   };
 }
 
-export function ZoomableImage({ containerStyle, imageStyle, uri }: ZoomableImageProps) {
+export function ZoomableImage({
+  accessibilityLabel = 'Product image',
+  containerStyle,
+  imageStyle,
+  uri,
+}: ZoomableImageProps) {
   const scale = useMemo(() => new Animated.Value(1), []);
   const translateX = useMemo(() => new Animated.Value(0), []);
   const translateY = useMemo(() => new Animated.Value(0), []);
@@ -220,7 +226,13 @@ export function ZoomableImage({ containerStyle, imageStyle, uri }: ZoomableImage
       style={[styles.container, containerStyle]}
       {...panResponder.panHandlers}
     >
-      <Pressable onPress={handlePress} style={styles.imageWrap}>
+      <Pressable
+        accessibilityHint="Double tap to zoom in or out"
+        accessibilityLabel={accessibilityLabel}
+        accessibilityRole="imagebutton"
+        onPress={handlePress}
+        style={styles.imageWrap}
+      >
         <Animated.View
           style={[
             styles.imageWrap,

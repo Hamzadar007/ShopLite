@@ -1,5 +1,6 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, Text, View } from 'react-native';
+
+import { LazyImage } from '@/components/LazyImage';
 
 import { colors } from '@/theme/colors';
 import type { CartItem } from '@/types/cart';
@@ -39,13 +40,12 @@ export function OrderSummaryCard({ address, items, subtotal }: OrderSummaryCardP
           {items.map((item) => (
             <View key={item.product.id} style={styles.itemRow}>
               <View style={styles.itemImageWrap}>
-                {item.product.image ? (
-                  <Image source={{ uri: item.product.image }} style={styles.itemImage} />
-                ) : (
-                  <View style={styles.itemImagePlaceholder}>
-                    <Ionicons color={colors.muted} name="image-outline" size={heightPixel(18)} />
-                  </View>
-                )}
+                <LazyImage
+                  placeholderStyle={styles.itemImagePlaceholder}
+                  recyclingKey={`summary-${item.product.id}`}
+                  style={styles.itemImage}
+                  uri={item.product.image}
+                />
               </View>
               <View style={styles.itemDetails}>
                 <Text numberOfLines={2} style={styles.itemTitle}>

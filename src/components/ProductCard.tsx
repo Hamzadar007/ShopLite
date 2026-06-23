@@ -1,5 +1,5 @@
+import { memo } from 'react';
 import {
-  Image,
   Pressable,
   StyleSheet,
   Text,
@@ -8,6 +8,8 @@ import {
   type ViewStyle,
 } from 'react-native';
 
+import { LazyImage } from '@/components/LazyImage';
+import { PRODUCT_CARD_HEIGHT } from '@/constants/listLayout';
 import { colors } from '@/theme/colors';
 import type { Product } from '@/types/product';
 import { formatPrice } from '@/utils/formatPrice';
@@ -19,21 +21,24 @@ type ProductCardProps = {
   style?: StyleProp<ViewStyle>;
 };
 
-export function ProductCard({ onPress, product, style }: ProductCardProps) {
+function ProductCardComponent({ onPress, product, style }: ProductCardProps) {
   const category = formatCategory(product.category);
 
   return (
     <Pressable
+      accessibilityHint="Opens product details"
+      accessibilityLabel={`${product.title}, ${formatPrice(product.price)}`}
       accessibilityRole="button"
       onPress={onPress}
       style={({ pressed }) => [styles.card, style, pressed && styles.cardPressed]}
     >
       <View style={styles.imageWrap}>
-        {product.image ? (
-          <Image source={{ uri: product.image }} style={styles.image} />
-        ) : (
-          <View style={styles.imagePlaceholder} />
-        )}
+        <LazyImage
+          placeholderStyle={styles.imagePlaceholder}
+          recyclingKey={`product-${product.id}`}
+          style={styles.image}
+          uri={product.image}
+        />
       </View>
       <View style={styles.cardContent}>
         <View style={styles.metaRow}>
@@ -51,6 +56,12 @@ export function ProductCard({ onPress, product, style }: ProductCardProps) {
     </Pressable>
   );
 }
+
+function areProductCardPropsEqual(prev: ProductCardProps, next: ProductCardProps) {
+  return prev.product.id === next.product.id && prev.style === next.style;
+}
+
+export const ProductCard = memo(ProductCardComponent, areProductCardPropsEqual);
 
 function formatCategory(category?: string) {
   if (!category) {
@@ -72,6 +83,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     flexDirection: 'row',
     gap: heightPixel(14),
+    minHeight: PRODUCT_CARD_HEIGHT,
     overflow: 'hidden',
     paddingHorizontal: heightPixel(10),
     paddingVertical: hp(1.12),
@@ -99,11 +111,9 @@ const styles = StyleSheet.create({
   image: {
     borderRadius: heightPixel(8),
     height: heightPixel(96),
-    resizeMode: 'contain',
     width: heightPixel(96),
   },
   imagePlaceholder: {
-    backgroundColor: '#E8E8EE',
     borderRadius: heightPixel(8),
     height: heightPixel(96),
     width: heightPixel(96),

@@ -18,9 +18,10 @@ export function QuantityStepper({
   quantity,
 }: QuantityStepperProps) {
   return (
-    <View style={styles.stepper}>
+    <View accessibilityLabel={`Quantity ${quantity}`} style={styles.stepper}>
       <Pressable
         accessibilityLabel="Decrease quantity"
+        accessibilityRole="button"
         hitSlop={8}
         onPress={onDecrement}
         style={styles.stepperButton}
@@ -30,6 +31,7 @@ export function QuantityStepper({
       <Text style={styles.quantityValue}>{quantity}</Text>
       <Pressable
         accessibilityLabel="Increase quantity"
+        accessibilityRole="button"
         accessibilityState={{ disabled: !canIncrement }}
         disabled={!canIncrement}
         hitSlop={8}

@@ -87,6 +87,8 @@ export default function CheckoutSummaryScreen() {
 
       <View style={[styles.footer, { paddingBottom: bottom + hp(1.34) }]}>
         <Pressable
+          accessibilityLabel={isProcessing ? 'Placing order' : 'Place order'}
+          accessibilityRole="button"
           accessibilityState={{ disabled: isProcessing }}
           disabled={isProcessing}
           onPress={() => void handlePlaceOrder()}

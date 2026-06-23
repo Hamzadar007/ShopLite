@@ -72,7 +72,12 @@ export default function CheckoutConfirmationScreen() {
           subtotal={placedOrder.subtotal}
         />
 
-        <Pressable onPress={handleContinueShopping} style={styles.primaryButton}>
+        <Pressable
+          accessibilityLabel="Continue shopping"
+          accessibilityRole="button"
+          onPress={handleContinueShopping}
+          style={styles.primaryButton}
+        >
           <Text style={styles.primaryButtonText}>Continue Shopping</Text>
         </Pressable>
       </ScrollView>

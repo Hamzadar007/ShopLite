@@ -1,7 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { memo, useCallback } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { LazyImage } from '@/components/LazyImage';
 import { QuantityStepper } from '@/components/QuantityStepper';
+import { CART_ITEM_ROW_HEIGHT } from '@/constants/listLayout';
 import { useCartStore } from '@/store/cartStore';
 import { colors } from '@/theme/colors';
 import type { CartItem } from '@/types/cart';
@@ -26,7 +29,7 @@ function isInStock(item: CartItem) {
   return true;
 }
 
-export function CartItemRow({ item }: CartItemRowProps) {
+function CartItemRowComponent({ item }: CartItemRowProps) {
   const incrementItem = useCartStore((state) => state.incrementItem);
   const decrementItem = useCartStore((state) => state.decrementItem);
   const removeItem = useCartStore((state) => state.removeItem);
@@ -36,25 +39,32 @@ export function CartItemRow({ item }: CartItemRowProps) {
   const inStock = isInStock(item);
   const canIncrement = inStock && (maxQuantity === undefined || item.quantity < maxQuantity);
 
-  const handleDecrement = () => {
+  const handleDecrement = useCallback(() => {
     if (item.quantity <= 1) {
       removeItem(item.product.id);
       return;
     }
 
     decrementItem(item.product.id);
-  };
+  }, [decrementItem, item.product.id, item.quantity, removeItem]);
+
+  const handleIncrement = useCallback(() => {
+    incrementItem(item.product.id);
+  }, [incrementItem, item.product.id]);
+
+  const handleRemove = useCallback(() => {
+    removeItem(item.product.id);
+  }, [item.product.id, removeItem]);
 
   return (
     <View style={styles.card}>
       <View style={styles.imageWrap}>
-        {item.product.image ? (
-          <Image source={{ uri: item.product.image }} style={styles.image} />
-        ) : (
-          <View style={styles.imagePlaceholder}>
-            <Ionicons color={colors.muted} name="image-outline" size={heightPixel(24)} />
-          </View>
-        )}
+        <LazyImage
+          placeholderStyle={styles.imagePlaceholder}
+          recyclingKey={`cart-${item.product.id}`}
+          style={styles.image}
+          uri={item.product.image}
+        />
       </View>
 
       <View style={styles.content}>
@@ -63,9 +73,10 @@ export function CartItemRow({ item }: CartItemRowProps) {
             {item.product.title}
           </Text>
           <Pressable
-            accessibilityLabel="Remove item"
+            accessibilityLabel={`Remove ${item.product.title} from cart`}
+            accessibilityRole="button"
             hitSlop={8}
-            onPress={() => removeItem(item.product.id)}
+            onPress={handleRemove}
             style={styles.removeButton}
           >
             <Ionicons color={colors.muted} name="close" size={heightPixel(20)} />
@@ -78,7 +89,7 @@ export function CartItemRow({ item }: CartItemRowProps) {
           <QuantityStepper
             canIncrement={canIncrement}
             onDecrement={handleDecrement}
-            onIncrement={() => incrementItem(item.product.id)}
+            onIncrement={handleIncrement}
             quantity={item.quantity}
           />
           <Text style={styles.lineTotal}>{formatPrice(lineTotal)}</Text>
@@ -88,6 +99,14 @@ export function CartItemRow({ item }: CartItemRowProps) {
   );
 }
 
+function areCartItemRowPropsEqual(prev: CartItemRowProps, next: CartItemRowProps) {
+  return (
+    prev.item.product.id === next.item.product.id && prev.item.quantity === next.item.quantity
+  );
+}
+
+export const CartItemRow = memo(CartItemRowComponent, areCartItemRowPropsEqual);
+
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
@@ -96,6 +115,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     flexDirection: 'row',
     gap: heightPixel(12),
+    minHeight: CART_ITEM_ROW_HEIGHT,
     padding: heightPixel(12),
   },
   imageWrap: {
@@ -109,7 +129,6 @@ const styles = StyleSheet.create({
   image: {
     borderRadius: heightPixel(8),
     height: heightPixel(80),
-    resizeMode: 'contain',
     width: heightPixel(80),
   },
   imagePlaceholder: {

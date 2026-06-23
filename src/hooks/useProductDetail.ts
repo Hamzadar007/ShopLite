@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { getProduct } from '@/services/product/product';
 import { useProductStore } from '@/store/productStore';
+import { useRecentlyViewedStore } from '@/store/recentlyViewedStore';
 import type { Product } from '@/types/product';
 
 function getErrorMessage(error: unknown) {
@@ -47,6 +48,14 @@ export function useProductDetail(productId: number) {
   useEffect(() => {
     void refetch();
   }, [refetch]);
+
+  useEffect(() => {
+    if (!product) {
+      return;
+    }
+
+    useRecentlyViewedStore.getState().addProduct(product);
+  }, [product]);
 
   return {
     product,

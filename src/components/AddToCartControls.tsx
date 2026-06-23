@@ -52,7 +52,8 @@ export function AddToCartControls({ inStock, product }: AddToCartControlsProps) 
   if (quantity === 0) {
     return (
       <Pressable
-        accessibilityLabel="Add to cart"
+        accessibilityLabel={inStock ? `Add ${product.title} to cart` : 'Out of stock'}
+        accessibilityRole="button"
         accessibilityState={{ disabled: !inStock }}
         disabled={!inStock}
         onPress={handleAdd}
@@ -77,7 +78,8 @@ export function AddToCartControls({ inStock, product }: AddToCartControlsProps) 
       </View>
 
       <Pressable
-        accessibilityLabel="Remove from cart"
+        accessibilityLabel={`Remove ${product.title} from cart`}
+        accessibilityRole="button"
         hitSlop={8}
         onPress={() => removeItem(product.id)}
         style={styles.removeButton}

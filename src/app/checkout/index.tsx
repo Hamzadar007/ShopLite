@@ -160,7 +160,12 @@ export default function CheckoutAddressScreen() {
         </ScrollView>
 
         <View style={[styles.footer, { paddingBottom: bottom + hp(1.34) }]}>
-          <Pressable onPress={handleContinue} style={styles.primaryButton}>
+          <Pressable
+            accessibilityLabel="Continue to summary"
+            accessibilityRole="button"
+            onPress={handleContinue}
+            style={styles.primaryButton}
+          >
             <Text style={styles.primaryButtonText}>Continue to Summary</Text>
           </Pressable>
         </View>

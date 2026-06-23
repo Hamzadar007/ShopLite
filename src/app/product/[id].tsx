@@ -40,7 +40,12 @@ export default function ProductDetailScreen() {
           <Ionicons color={colors.muted} name="cube-outline" size={heightPixel(48)} />
           <Text style={styles.emptyTitle}>No data found</Text>
           {error ? <Text style={styles.errorText}>{error}</Text> : null}
-          <Pressable style={styles.retryButton} onPress={() => void refetch()}>
+          <Pressable
+            accessibilityLabel="Try again"
+            accessibilityRole="button"
+            onPress={() => void refetch()}
+            style={styles.retryButton}
+          >
             <Text style={styles.retryButtonText}>Try again</Text>
           </Pressable>
         </View>
@@ -59,7 +64,11 @@ export default function ProductDetailScreen() {
         <View style={[styles.productLayout, isWideLayout && styles.productLayoutWide]}>
           <View style={[styles.imagePanel, isWideLayout && styles.imagePanelWide]}>
             {detailImage ? (
-              <ZoomableImage imageStyle={styles.image} uri={detailImage} />
+              <ZoomableImage
+                accessibilityLabel={`${product.title} image`}
+                imageStyle={styles.image}
+                uri={detailImage}
+              />
             ) : (
               <View style={styles.imagePlaceholder}>
                 <Ionicons color={colors.muted} name="image-outline" size={heightPixel(34)} />

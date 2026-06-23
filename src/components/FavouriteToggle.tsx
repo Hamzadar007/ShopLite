@@ -19,7 +19,12 @@ export function FavouriteToggle({ compact = false, product }: FavouriteTogglePro
 
   return (
     <Pressable
-      accessibilityLabel={isFavourite ? 'Remove from favourites' : 'Add to favourites'}
+      accessibilityLabel={
+        isFavourite
+          ? `Remove ${product.title} from favourites`
+          : `Add ${product.title} to favourites`
+      }
+      accessibilityRole="button"
       accessibilityState={{ selected: isFavourite }}
       hitSlop={8}
       onPress={() => toggleItem(product)}

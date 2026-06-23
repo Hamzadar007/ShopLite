@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   FlatList,
   Pressable,
@@ -9,14 +9,23 @@ import {
   TextInput,
   useWindowDimensions,
   View,
+  type ListRenderItem,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ProductCard } from '@/components/ProductCard';
 import { ProductListSkeleton } from '@/components/ProductListSkeleton';
+import { RecentlyViewedList } from '@/components/RecentlyViewedList';
 import { Screen } from '@/components/Screen';
+import {
+  createVerticalListGetItemLayout,
+  PRODUCT_CARD_HEIGHT,
+  PRODUCT_LIST_GAP,
+  VERTICAL_LIST_PERF_PROPS,
+} from '@/constants/listLayout';
 import { useProduct } from '@/hooks/useProduct';
 import { colors } from '@/theme/colors';
+import type { Product } from '@/types/product';
 import { fontPixel, hp, wp } from '@/utils/Responsive';
 
 export default function ProductsScreen() {
@@ -43,6 +52,36 @@ export default function ProductsScreen() {
   const numberOfColumns = width >= 768 ? 2 : 1;
   const isGridLayout = numberOfColumns > 1;
 
+  const getItemLayout = useMemo(
+    () => createVerticalListGetItemLayout(PRODUCT_CARD_HEIGHT, PRODUCT_LIST_GAP, numberOfColumns),
+    [numberOfColumns],
+  );
+
+  const keyExtractor = useCallback((item: Product) => item.id.toString(), []);
+
+  const handleProductPress = useCallback(
+    (productId: number) => {
+      router.push(`/product/${productId}`);
+    },
+    [router],
+  );
+
+  const renderItem = useCallback<ListRenderItem<Product>>(
+    ({ item }) => (
+      <ProductCard
+        onPress={() => handleProductPress(item.id)}
+        product={item}
+        style={styles.productCard}
+      />
+    ),
+    [handleProductPress],
+  );
+
+  const listHeader = useMemo(
+    () => (!hasSearchQuery ? <RecentlyViewedList /> : null),
+    [hasSearchQuery],
+  );
+
   if (loading && products.length === 0) {
     return (
       <Screen>
@@ -57,7 +96,12 @@ export default function ProductsScreen() {
         <View style={styles.centerState}>
           <Text style={styles.errorTitle}>Unable to load products</Text>
           <Text style={styles.errorText}>{error}</Text>
-          <Pressable style={styles.retryButton} onPress={() => void refetch()}>
+          <Pressable
+            accessibilityLabel="Try again"
+            accessibilityRole="button"
+            onPress={() => void refetch()}
+            style={styles.retryButton}
+          >
             <Text style={styles.retryButtonText}>Try again</Text>
           </Pressable>
         </View>
@@ -76,6 +120,8 @@ export default function ProductsScreen() {
           <View style={styles.searchBox}>
             <Ionicons name="search-outline" color={colors.muted} size={20} />
             <TextInput
+              accessibilityLabel="Search products"
+              accessibilityRole="search"
               autoCapitalize="none"
               autoCorrect={false}
               clearButtonMode="never"
@@ -89,6 +135,7 @@ export default function ProductsScreen() {
             {searchQuery.length > 0 ? (
               <Pressable
                 accessibilityLabel="Clear product search"
+                accessibilityRole="button"
                 hitSlop={8}
                 onPress={() => setSearchQuery('')}
                 style={styles.clearSearchButton}
@@ -100,22 +147,16 @@ export default function ProductsScreen() {
           {error ? <Text style={styles.warningText}>{error}</Text> : null}
         </View>
         <FlatList
+          {...VERTICAL_LIST_PERF_PROPS}
           key={`products-${numberOfColumns}`}
-          data={filteredProducts}
-          numColumns={numberOfColumns}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <ProductCard
-              onPress={() => router.push(`/product/${item.id}`)}
-              product={item}
-              style={styles.productCard}
-            />
-          )}
           columnWrapperStyle={isGridLayout ? styles.columnWrapper : undefined}
           contentContainerStyle={[
             filteredProducts.length === 0 ? styles.emptyList : styles.listContent,
             filteredProducts.length > 0 && { paddingBottom: listBottomInset },
           ]}
+          data={filteredProducts}
+          getItemLayout={hasSearchQuery ? getItemLayout : undefined}
+          keyExtractor={keyExtractor}
           ListEmptyComponent={
             <View style={styles.emptyState}>
               <Text style={styles.emptyTitle}>
@@ -128,10 +169,13 @@ export default function ProductsScreen() {
               </Text>
             </View>
           }
+          ListHeaderComponent={listHeader}
+          numColumns={numberOfColumns}
           onRefresh={() => void refetch()}
           refreshing={loading}
-          showsVerticalScrollIndicator={false}
+          renderItem={renderItem}
           scrollIndicatorInsets={{ bottom: listBottomInset }}
+          showsVerticalScrollIndicator={false}
           style={styles.list}
         />
       </View>

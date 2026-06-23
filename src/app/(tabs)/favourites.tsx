@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   FlatList,
   Pressable,
@@ -9,13 +9,21 @@ import {
   TextInput,
   useWindowDimensions,
   View,
+  type ListRenderItem,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ProductCard } from '@/components/ProductCard';
 import { Screen } from '@/components/Screen';
+import {
+  createVerticalListGetItemLayout,
+  PRODUCT_CARD_HEIGHT,
+  PRODUCT_LIST_GAP,
+  VERTICAL_LIST_PERF_PROPS,
+} from '@/constants/listLayout';
 import { useFavouriteStore } from '@/store/favouriteStore';
 import { colors } from '@/theme/colors';
+import type { Product } from '@/types/product';
 import { fontPixel, heightPixel, hp, wp } from '@/utils/Responsive';
 
 export default function FavouritesScreen() {
@@ -42,6 +50,31 @@ export default function FavouritesScreen() {
   const numberOfColumns = width >= 768 ? 2 : 1;
   const isGridLayout = numberOfColumns > 1;
 
+  const getItemLayout = useMemo(
+    () => createVerticalListGetItemLayout(PRODUCT_CARD_HEIGHT, PRODUCT_LIST_GAP, numberOfColumns),
+    [numberOfColumns],
+  );
+
+  const keyExtractor = useCallback((item: Product) => item.id.toString(), []);
+
+  const handleProductPress = useCallback(
+    (productId: number) => {
+      router.push(`/product/${productId}`);
+    },
+    [router],
+  );
+
+  const renderItem = useCallback<ListRenderItem<Product>>(
+    ({ item }) => (
+      <ProductCard
+        onPress={() => handleProductPress(item.id)}
+        product={item}
+        style={styles.productCard}
+      />
+    ),
+    [handleProductPress],
+  );
+
   return (
     <Screen>
       <View style={styles.container}>
@@ -53,6 +86,8 @@ export default function FavouritesScreen() {
           <View style={styles.searchBox}>
             <Ionicons color={colors.muted} name="search-outline" size={20} />
             <TextInput
+              accessibilityLabel="Search favourites"
+              accessibilityRole="search"
               autoCapitalize="none"
               autoCorrect={false}
               clearButtonMode="never"
@@ -66,6 +101,7 @@ export default function FavouritesScreen() {
             {searchQuery.length > 0 ? (
               <Pressable
                 accessibilityLabel="Clear favourites search"
+                accessibilityRole="button"
                 hitSlop={8}
                 onPress={() => setSearchQuery('')}
                 style={styles.clearSearchButton}
@@ -77,6 +113,7 @@ export default function FavouritesScreen() {
         </View>
 
         <FlatList
+          {...VERTICAL_LIST_PERF_PROPS}
           key={`favourites-${numberOfColumns}`}
           columnWrapperStyle={isGridLayout ? styles.columnWrapper : undefined}
           contentContainerStyle={[
@@ -84,7 +121,8 @@ export default function FavouritesScreen() {
             filteredFavourites.length > 0 && { paddingBottom: listBottomInset },
           ]}
           data={filteredFavourites}
-          keyExtractor={(item) => item.id.toString()}
+          getItemLayout={getItemLayout}
+          keyExtractor={keyExtractor}
           ListEmptyComponent={
             <View style={styles.emptyState}>
               <Ionicons color={colors.muted} name="heart-outline" size={heightPixel(52)} />
@@ -99,13 +137,7 @@ export default function FavouritesScreen() {
             </View>
           }
           numColumns={numberOfColumns}
-          renderItem={({ item }) => (
-            <ProductCard
-              onPress={() => router.push(`/product/${item.id}`)}
-              product={item}
-              style={styles.productCard}
-            />
-          )}
+          renderItem={renderItem}
           scrollIndicatorInsets={{ bottom: listBottomInset }}
           showsVerticalScrollIndicator={false}
           style={styles.list}
