@@ -1,7 +1,8 @@
 import { useRouter } from 'expo-router';
 import { memo, useCallback, useMemo } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 
+import { FocusablePressable } from '@/components/FocusablePressable';
 import { LazyImage } from '@/components/LazyImage';
 import {
   createHorizontalListGetItemLayout,
@@ -75,7 +76,7 @@ type RecentlyViewedCardProps = {
 
 function RecentlyViewedCardComponent({ onPress, product }: RecentlyViewedCardProps) {
   return (
-    <Pressable
+    <FocusablePressable
       accessibilityHint="Opens product details"
       accessibilityLabel={`${product.title}, ${formatPrice(product.price)}`}
       accessibilityRole="button"
@@ -94,7 +95,7 @@ function RecentlyViewedCardComponent({ onPress, product }: RecentlyViewedCardPro
         {product.title}
       </Text>
       <Text style={styles.price}>{formatPrice(product.price)}</Text>
-    </Pressable>
+    </FocusablePressable>
   );
 }
 
